@@ -1,0 +1,19 @@
+.logo{
+    height: 36px;
+    width: auto;
+    display: inline-block;
+}
+
+.avaiableArmiesCard{
+    border-radius: 16px !important;
+    margin-top: 16px !important;
+}
+
+.avaiableArmiesDescription{
+    font-size: 12px !important;
+    margin: 8px !important;
+}
+
+.playCards{
+    margin-top: 16px !important;
+}

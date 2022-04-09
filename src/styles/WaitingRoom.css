@@ -1,0 +1,7 @@
+.waiting-room{
+    text-align: center;
+}
+.player-list{
+    display: inline-block !important;
+    width: 250px;
+}

@@ -1,0 +1,16 @@
+.home{
+    text-align: center;
+  }
+  
+.home-title{
+    margin-top: 0 !important;
+    font-size: 5em;
+}
+
+.home-button{
+    margin-top: 16px !important;
+}
+
+.MediumEmphasis{
+    opacity: 0.6;
+}
