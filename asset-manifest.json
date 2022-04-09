@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/rosiko-fe/static/css/main.1ed81eb5.chunk.css",
+    "main.js": "/rosiko-fe/static/js/main.5c339378.chunk.js",
+    "main.js.map": "/rosiko-fe/static/js/main.5c339378.chunk.js.map",
+    "runtime~main.js": "/rosiko-fe/static/js/runtime~main.f79cc1dc.js",
+    "runtime~main.js.map": "/rosiko-fe/static/js/runtime~main.f79cc1dc.js.map",
+    "static/js/2.b8714dd4.chunk.js": "/rosiko-fe/static/js/2.b8714dd4.chunk.js",
+    "static/js/2.b8714dd4.chunk.js.map": "/rosiko-fe/static/js/2.b8714dd4.chunk.js.map",
+    "static/js/3.0e26a692.chunk.js": "/rosiko-fe/static/js/3.0e26a692.chunk.js",
+    "static/js/3.0e26a692.chunk.js.map": "/rosiko-fe/static/js/3.0e26a692.chunk.js.map",
+    "index.html": "/rosiko-fe/index.html",
+    "precache-manifest.81e8337fefe8b0b8a5414d9381b85daa.js": "/rosiko-fe/precache-manifest.81e8337fefe8b0b8a5414d9381b85daa.js",
+    "service-worker.js": "/rosiko-fe/service-worker.js",
+    "static/css/main.1ed81eb5.chunk.css.map": "/rosiko-fe/static/css/main.1ed81eb5.chunk.css.map"
+  }
+}
