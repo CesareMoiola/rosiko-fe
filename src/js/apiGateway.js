@@ -1,5 +1,6 @@
 
-const endPoint = "https://rosiko-be.herokuapp.com";
+let endPoint = "https://rosiko-be.herokuapp.com";
+//let endPoint = "http://localhost:8080";
 
 const newMatch = function(matchName, password, playerName){
     const url = endPoint + "/match/new_match";
@@ -30,7 +31,7 @@ const getJoinableMatches = function(){
     var request = new XMLHttpRequest();
     var matches = null;
     
-    request.open("POST", url, false);
+    request.open("GET", url, false);
     request.setRequestHeader("Content-Type", "application/json");
     request.send();
 
@@ -45,7 +46,7 @@ const updateMatch = function(match){
     const url = endPoint + "/match/update";
     var request = new XMLHttpRequest();
     
-    request.open("POST", url, false);
+    request.open("GET", url, false);
     request.setRequestHeader("Content-Type", "application/json");
     request.send(JSON.stringify(match)); 
 
@@ -72,7 +73,7 @@ const joinMatch = function(matchId, playerName){
     var request = new XMLHttpRequest();
     var playerId = null;
     
-    request.open("POST", url, false);
+    request.open("GET", url, false);
     request.setRequestHeader("Content-Type", "application/json");
     request.send(JSON.stringify({ matchId: matchId, playerName: playerName}));     
 
@@ -91,7 +92,7 @@ const getPlayer = function(matchId, playerId){
     var request = new XMLHttpRequest();
     var player = null;
     
-    request.open("POST", url, false);
+    request.open("GET", url, false);
     request.setRequestHeader("Content-Type", "application/json");
     request.send(JSON.stringify({matchId: matchId, playerId: playerId}));
 
@@ -110,7 +111,7 @@ const getPlayers = function(matchId){
     var request = new XMLHttpRequest();
     var players = null;
     
-    request.open("POST", url, false);
+    request.open("GET", url, false);
     request.setRequestHeader("Content-Type", "application/json");
     request.send(JSON.stringify({matchId: matchId}));
 
@@ -125,13 +126,12 @@ const getPlayers = function(matchId){
 }
 
 const getMatch = function(matchId){
-    const url = endPoint + "https://rosiko-be.herokuapp.com";
-    var request = new XMLHttpRequest();
-    var match = null;
+    let url = endPoint + "/match/get_match?matchId=" + matchId;
+    let request = new XMLHttpRequest();
+    let match = null;
     
-    request.open("POST", url, false);
-    request.setRequestHeader("Content-Type", "application/json");
-    request.send(JSON.stringify({matchId: matchId}));
+    request.open("GET", url, false);
+    request.send(null);
 
     if (request.status === 200) {
         match = JSON.parse(request.responseText);

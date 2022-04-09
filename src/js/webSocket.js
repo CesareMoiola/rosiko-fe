@@ -2,7 +2,8 @@ import SockJS from 'sockjs-client';
 import {Stomp} from '@stomp/stompjs';
 
 let userId
-const endPoint = "https://rosiko-be.herokuapp.com";
+let endPoint = "https://rosiko-be.herokuapp.com";
+//let endPoint = "http://localhost:8080";
 
 class PrivateWebSocket {
     constructor() {

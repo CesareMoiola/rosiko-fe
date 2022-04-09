@@ -73,9 +73,6 @@ function ControlPanel(props) {
     const getActionPanel = (match, player, cards) => {
         let actionPanel;
 
-        console.log("PLAYER IS ACTIVE: " + player.active);
-        console.dir(player);
-
         //Mostra il pannello di azione in base alla fase di gioco
         if(player.active || match.stage === "GAME_OVER"){
             switch(match.stage){
