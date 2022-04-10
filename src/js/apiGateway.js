@@ -13,7 +13,7 @@ const newMatch = function(matchName, password, playerName){
     }
 
     var request = new XMLHttpRequest();
-    request.open('POST', url, false);  // `false` makes the request synchronous
+    request.open('GET', url, false);  // `false` makes the request synchronous
     request.setRequestHeader("Content-Type", "application/json");
     request.send(JSON.stringify(data));
 
@@ -59,7 +59,7 @@ const updatePlayer = function(player){
     const url = endPoint + "/match/update_player";
     var request = new XMLHttpRequest();
     
-    request.open("POST", url, false);
+    request.open("GET", url, false);
     request.setRequestHeader("Content-Type", "application/json");
     request.send(JSON.stringify(player)); 
 
