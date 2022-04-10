@@ -15,6 +15,7 @@ const newMatch = function(matchName, password, playerName){
     var request = new XMLHttpRequest();
     request.open('GET', url, false);  // `false` makes the request synchronous
     request.setRequestHeader("Content-Type", "application/json");
+    request.withCredentials(false);
     request.send(JSON.stringify(data));
 
     if (request.status === 200) {
@@ -33,6 +34,7 @@ const getJoinableMatches = function(){
     
     request.open("GET", url, false);
     request.setRequestHeader("Content-Type", "application/json");
+    request.withCredentials(false);
     request.send();
 
     if (request.status === 200) {
@@ -48,6 +50,7 @@ const updateMatch = function(match){
     
     request.open("GET", url, false);
     request.setRequestHeader("Content-Type", "application/json");
+    request.withCredentials(false);
     request.send(JSON.stringify(match)); 
 
     if (request.status !== 200) {
@@ -61,6 +64,7 @@ const updatePlayer = function(player){
     
     request.open("GET", url, false);
     request.setRequestHeader("Content-Type", "application/json");
+    request.withCredentials(false);
     request.send(JSON.stringify(player)); 
 
     if (request.status !== 200) {
@@ -75,6 +79,7 @@ const joinMatch = function(matchId, playerName){
     
     request.open("GET", url, false);
     request.setRequestHeader("Content-Type", "application/json");
+    request.withCredentials(false);
     request.send(JSON.stringify({ matchId: matchId, playerName: playerName}));     
 
     if (request.status === 200) {
@@ -94,6 +99,7 @@ const getPlayer = function(matchId, playerId){
     
     request.open("GET", url, false);
     request.setRequestHeader("Content-Type", "application/json");
+    request.withCredentials(false);
     request.send(JSON.stringify({matchId: matchId, playerId: playerId}));
 
     if (request.status === 200) {
@@ -113,6 +119,7 @@ const getPlayers = function(matchId){
     
     request.open("GET", url, false);
     request.setRequestHeader("Content-Type", "application/json");
+    request.withCredentials(false);
     request.send(JSON.stringify({matchId: matchId}));
 
     if (request.status === 200) {
@@ -131,6 +138,7 @@ const getMatch = function(matchId){
     let match = null;
     
     request.open("GET", url, false);
+    request.withCredentials(false);
     request.send(null);
 
     if (request.status === 200) {
