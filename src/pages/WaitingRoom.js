@@ -34,7 +34,7 @@ function WaitingRoom() {
         }, [navigate]
     );              
 
-    const getPlayers = matchId => {
+    const getPlayers = () => {
         var players = match.players;
         var playersItem = null;
         if(players.length > 0){

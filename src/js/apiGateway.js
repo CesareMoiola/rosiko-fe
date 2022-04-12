@@ -1,9 +1,8 @@
 
-let endPoint = "https://rosiko-be.herokuapp.com";
-//let endPoint = "http://localhost:8080";
+import endPoint from "./endPoint";
 
 const newMatch = function(matchName, password, playerName){
-    const url = endPoint + "/match/new_match";
+    const url = endPoint + "/new_match";
     var match = null;
 
     var data = {
@@ -27,7 +26,7 @@ const newMatch = function(matchName, password, playerName){
 }
 
 const getJoinableMatches = function(){
-    const url = endPoint + "/match/joinable_matches";
+    const url = endPoint + "/joinable_matches";
     var request = new XMLHttpRequest();
     var matches = null;
     
@@ -42,34 +41,8 @@ const getJoinableMatches = function(){
     return matches;
 }
 
-const updateMatch = function(match){
-    const url = endPoint + "/match/update";
-    var request = new XMLHttpRequest();
-    
-    request.open("GET", url, false);
-    request.setRequestHeader("Content-Type", "application/json");
-    request.send(JSON.stringify(match)); 
-
-    if (request.status !== 200) {
-        console.log("ERROR on " + url + " status: " + request.status);
-    }
-}
-
-const updatePlayer = function(player){
-    const url = endPoint + "/match/update_player";
-    var request = new XMLHttpRequest();
-    
-    request.open("GET", url, false);
-    request.setRequestHeader("Content-Type", "application/json");
-    request.send(JSON.stringify(player)); 
-
-    if (request.status !== 200) {
-        console.log("ERROR on " + url + " status: " + request.status);
-    }
-}
-
 const joinMatch = function(matchId, playerName){
-    const url = endPoint + "/match/join_match";
+    const url = endPoint + "/join_match";
     var request = new XMLHttpRequest();
     var playerId = null;
     
@@ -88,7 +61,7 @@ const joinMatch = function(matchId, playerName){
 }
 
 const getPlayer = function(matchId, playerId){
-    const url = endPoint + "/match/get_player";
+    const url = endPoint + "/get_player";
     var request = new XMLHttpRequest();
     var player = null;
     
@@ -107,7 +80,7 @@ const getPlayer = function(matchId, playerId){
 }
 
 const getPlayers = function(matchId){
-    const url = endPoint + "/match/get_players";
+    const url = endPoint + "/get_players";
     var request = new XMLHttpRequest();
     var players = null;
     
@@ -126,7 +99,7 @@ const getPlayers = function(matchId){
 }
 
 const getMatch = function(matchId){
-    let url = endPoint + "/match/get_match?matchId=" + matchId;
+    let url = endPoint + "/get_match?matchId=" + matchId;
     let request = new XMLHttpRequest();
     let match = null;
     
@@ -146,8 +119,6 @@ const getMatch = function(matchId){
 export default {
     newMatch,
     getJoinableMatches,
-    updateMatch,
-    updatePlayer,
     joinMatch,
     getPlayer,
     getMatch,
