@@ -28,7 +28,14 @@ function Displacement(props) {
         if(!turnPlayer) territory = null;
 
         if(territoryFrom !== null){
-            territory = <Territory className = "territory_margin" territory = {territoryFrom} match={props.match} turnPlayer={turnPlayer} variant="territoryFrom"/>
+            territory = <Territory 
+                className = "territory_margin" 
+                territory = {territoryFrom} 
+                match={props.match} 
+                turnPlayer={turnPlayer} 
+                variant="territoryFrom"
+                setMatch={props.setMatch}
+                />
         }
 
         return territory;
@@ -38,7 +45,13 @@ function Displacement(props) {
         let territory = null;
 
         if(territoryTo != null){
-            territory = <Territory  className = "territory_margin" territory = {territoryTo} match={props.match} turnPlayer={turnPlayer} variant="territoryTo"/>
+            territory = <Territory  
+                className = "territory_margin" 
+                territory = {territoryTo} 
+                match={props.match} 
+                turnPlayer={turnPlayer} 
+                variant="territoryTo"
+                setMatch={props.setMatch}/>
         }
 
         return territory;

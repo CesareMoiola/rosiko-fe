@@ -1,5 +1,7 @@
-
 import endPoint from "./endPoint";
+
+const WebSocket = require("../js/webSocket").default;
+const client = WebSocket.getClient();
 
 const newMatch = function(matchName, password, playerName){
     const url = endPoint + "/new_match";
@@ -116,11 +118,56 @@ const getMatch = function(matchId){
     return match;
 }
 
+const placeArmy = function(matchId, territoryId){
+    client.send("/app/placeArmy", {}, JSON.stringify({matchId : matchId, territoryId : territoryId}));   
+}
+
+const setArmies = function(matchId, territoryId, armies){
+    client.send("/app/set_armies", {}, JSON.stringify({matchId : matchId, territoryId : territoryId, armies: armies}));   
+}
+
+const moveArmy = function(matchId, armies){
+    client.send("/app/move_armies", {}, JSON.stringify({matchId : matchId, armies : armies})); 
+}
+
+const attack = function(matchId, diceNumber){
+    client.send("/app/attack", {}, JSON.stringify({matchId : matchId, numberOfAttackerDice: diceNumber}));
+}
+
+const selectAttacker = function(matchId, territoryId){
+    client.send("/app/select_attacker", {}, JSON.stringify({matchId : matchId, territoryId : territoryId}));
+}
+
+const selectDefender = function(matchId, territoryId){
+    client.send("/app/select_defender", {}, JSON.stringify({matchId : matchId, territoryId : territoryId}));
+}
+
+const deselectTerritory = function(matchId, territoryId){
+    client.send("/app/deselect_territory", {}, JSON.stringify({matchId : matchId, territoryId : territoryId}));
+}
+
+const selectTerritoryFrom = function(matchId, territoryId){
+    client.send("/app/select_territory_from", {}, JSON.stringify({matchId : matchId, territoryId : territoryId})); 
+}
+
+const selectTerritoryTo = function(matchId, territoryId){
+    client.send("/app/select_territory_to", {}, JSON.stringify({matchId : matchId, territoryId : territoryId})); 
+}
+
 export default {
     newMatch,
     getJoinableMatches,
     joinMatch,
     getPlayer,
     getMatch,
-    getPlayers
+    getPlayers,
+    placeArmy,
+    moveArmy,
+    attack,
+    setArmies,
+    selectAttacker,
+    selectDefender,
+    deselectTerritory,
+    selectTerritoryFrom,
+    selectTerritoryTo
 };

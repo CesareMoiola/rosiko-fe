@@ -5,9 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Dice } from "./Dice";
 import countDice from "../js/diceUtils";
 import { ArmiesTheme } from "../js/armiesPalette";
-
-const WebSocket = require("../js/webSocket").default;
-const client = WebSocket.getClient();
+import MatchController from "../js/MatchController";
 
 //Restituisce il numero massimo di dadi che si possono utilizzare per il territorio
 const getNumberOfDice = (props) => {
@@ -78,10 +76,6 @@ const Terrirory = (props) => {
     //Ritorna il pulsante di attacco nel casso sia il territorio attaccante
     const getAttackButton = () =>{
 
-        const sendAttack = () => {
-            client.send("/app/attack", {}, JSON.stringify({matchId : props.match.id, numberOfAttackerDice: countDice(dices)}));
-        }
-
         if(props.variant === "attacker" && 
         (props.match.defender === null || props.match.attacker.owner.id !== props.match.defender.owner.id)) {
             return(
@@ -89,8 +83,8 @@ const Terrirory = (props) => {
                     className="attack_button" 
                     size="small" 
                     color="secondary" 
-                    disabled={props.match.defender === null || getNumberOfDice(props) < 1}
-                    onClick={sendAttack}>
+                    disabled={props.match.defender === null || getNumberOfDice(props) < 1 || props.isRolling}
+                    onClick={() => {MatchController.attack(props.match, dices, props.setRolling)}}>
                         Attack
                 </Button>
             );            
@@ -102,14 +96,13 @@ const Terrirory = (props) => {
 
         let button = null;
 
-        //Deseleziona un territorio
-        const deselectTerritory = () => { 
-            client.send("/app/deselect_territory", {}, JSON.stringify({matchId : props.match.id, territoryId : props.territory.id}));
-        }
-
         if( props.turnPlayer ) {
             button = (
-                <IconButton className="exit_button" aria-label="exit" size="small" onClick={deselectTerritory}>                
+                <IconButton 
+                    className="exit_button" 
+                    aria-label="exit" 
+                    size="small" 
+                    onClick={()=>{MatchController.deselectTerritory(props.match, props.territory, props.setMatch);}}>                
                     <CloseIcon sx={{color: ArmiesTheme[props.territory.color].contrastText}}/>
                 </IconButton>   
             );                     
@@ -140,6 +133,8 @@ const Terrirory = (props) => {
 
     //Ritorna i dadi
     const getDiceButtons = () => {
+        let showDice = JSON.parse(JSON.stringify(dices));
+
         //Caso in cui non c'è bisogno di lanciare i dadi
         if(props.variant === "territoryFrom" || props.variant === "territoryTo") return null;
 
@@ -168,40 +163,44 @@ const Terrirory = (props) => {
             setDices([newDices[0], newDices[1], newDices[2]]);
         }
 
+        if(props.isRolling){
+            for(let i=0; i<countDice(dices); i++){ showDice[i] = "rolling"; }
+        }
+
         return (
             <div>
                 <IconButton 
                     className = "diceButton"
                     onClick = {() => onClickHandlerDice(0)}
-                    disabled = {dices[0] === "none" || props.variant === "defender" || !turnPlayer}
+                    disabled = {showDice[0] === "none" || props.variant === "defender" || !turnPlayer || props.isRolling}
                     color = "primary"
                     >
                     <Dice 
                         className="dice" 
-                        value={dices[0]} 
+                        value={showDice[0]} 
                         fill={ArmiesTheme[props.territory.color].contrastText}
                         win={isWinner(0)}/>
                 </IconButton>
                 <IconButton 
                     className = "diceButton"
                     onClick = {() => onClickHandlerDice(1)}
-                    disabled = {dices[1] === "none" || props.variant === "defender" || !turnPlayer}
+                    disabled = {showDice[1] === "none" || props.variant === "defender" || !turnPlayer || props.isRolling}
                     color = "primary">
                     <Dice 
                         className="dice" 
-                        value={dices[1]} 
+                        value={showDice[1]} 
                         fill={ArmiesTheme[props.territory.color].contrastText}
                         win={isWinner(1)}/> 
                 </IconButton>
                 <IconButton 
                     className = "diceButton"
                     onClick = {() => onClickHandlerDice(2)}
-                    disabled = {dices[2] === "none" || props.variant === "defender" || !turnPlayer}
+                    disabled = {showDice[2] === "none" || props.variant === "defender" || !turnPlayer || props.isRolling}
                     color = "primary"
                 >
                     <Dice 
                         className="dice" 
-                        value={dices[2]} 
+                        value={showDice[2]} 
                         fill={ArmiesTheme[props.territory.color].contrastText}
                         win={isWinner(2)}
                         />  
@@ -217,11 +216,7 @@ const Terrirory = (props) => {
         const handleSliderChange = (event, newValue) => {
             if(moveArmies !== newValue){                
                 setMoveArmies(newValue);
-
-                client.send("/app/move_armies", {}, JSON.stringify({
-                    matchId : props.match.id, 
-                    armies : newValue
-                })); 
+                MatchController.moveArmy(props.match, newValue, props.setMatch);
             }
         };
 
@@ -252,18 +247,14 @@ const Terrirory = (props) => {
         return component;
     }
 
-    //Ritorna lo slider per lo spostamento delle armate
+    //Ritorna lo slider per lo spostamento delle armate della fase di spostamento
     const getMooveArmies = () => {
         let component = null;
 
         const handleSliderChange = (event, newValue) => {
             if(moveArmies !== newValue){                
                 setMoveArmies(newValue);
-
-                client.send("/app/move_armies", {}, JSON.stringify({
-                    matchId : props.match.id, 
-                    armies : newValue
-                })); 
+                MatchController.moveArmy(props.match, newValue, props.setMatch);
             }
         };
 

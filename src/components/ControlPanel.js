@@ -1,6 +1,6 @@
 import React from "react";
 import '../styles/ControlPanel.css';
-import { Card, CardContent, Divider, Typography, List, ListItem, Avatar} from "@mui/material";
+import { Card, CardContent, Divider, Typography, List, ListItem, Avatar, IconButton} from "@mui/material";
 import Place3Armies from "./Place3Armies";
 import PlaceArmies from "./PlaceArmies";
 import Winner from "./Winner";
@@ -77,10 +77,10 @@ function ControlPanel(props) {
         if(player.active || match.stage === "GAME_OVER"){
             switch(match.stage){
                 //Caso di piazzamento iniziale delle armate
-                case "INITIAL_PLACEMENT" :  actionPanel = <Place3Armies player = {player} match = {match}/>;    break;  
-                case "PLACEMENT" :          actionPanel = <PlaceArmies player = {player} match = {match} cards = {cards}/>; break;
-                case "ATTACK" :             actionPanel = <Attack player = {player} match = {match}/>;          break;
-                case "DISPLACEMENT" :       actionPanel = <Displacement player = {player} match = {match}/>;    break;
+                case "INITIAL_PLACEMENT" :  actionPanel = <Place3Armies player = {player} match = {match} setMatch = {props.setMatch}/>;    break;  
+                case "PLACEMENT" :          actionPanel = <PlaceArmies player = {player} match = {match} setMatch = {props.setMatch} cards = {cards}/>; break;
+                case "ATTACK" :             actionPanel = <Attack player = {player} match = {match} setMatch = {props.setMatch}/>;          break;
+                case "DISPLACEMENT" :       actionPanel = <Displacement player = {player} match = {match} setMatch = {props.setMatch}/>; break;
                 case "GAME_OVER":           actionPanel = <Winner player = {player} match = {match}/>;          break;
                 default :                   actionPanel = null;                                                 break;
             }
@@ -93,9 +93,15 @@ function ControlPanel(props) {
     return (
         <Card className="controlPanel" elevation={4}>
         <CardContent className="controlPanelContent">
-            <Typography variant="h5" fontWeight="bold">
-            Rosiko
-            </Typography>
+            <div className="controlPanelHeading">
+                <Typography variant="h5" fontWeight="bold">
+                    Rosiko
+                </Typography>
+                <IconButton size="small" fontSize="small">
+                    <span role="img" aria-label="surrender">🏳️</span>
+                </IconButton>
+            </div>
+            
             <Divider className="control_panel_divider"/>
             <List className="player_list">
                 {getPlayers(props.match)}

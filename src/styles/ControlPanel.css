@@ -44,3 +44,8 @@
 .action_panel_title{
     margin-bottom: 16px !important;
 }
+
+.controlPanelHeading{
+    display: flex;
+    justify-content: space-between;
+}

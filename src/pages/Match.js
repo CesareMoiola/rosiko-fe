@@ -8,27 +8,16 @@ import GameCard from "../components/GameCard";
 import '../styles/Match.css';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { getTheme } from "../js/armiesPalette";
+import MatchController from '../js/MatchController';
+import apiGateway from '../js/apiGateway';
 
 const WebSocket = require("../js/webSocket").default;
 const client = WebSocket.getClient();
-const ApiGateway = require("../js/apiGateway").default;
-
-const getPlayer = (match) => {
-    let id = WebSocket.getUserId();
-    let returnPlayer = null;
-
-    match.players.forEach(p => {
-        if(p.id === id){ 
-            returnPlayer = p; 
-        }
-    });  
-    return returnPlayer;
-}
 
 function Match() { 
     let { id } = useParams();
-    const [match, setMatch] = useState(ApiGateway.getMatch(id));
-    const [player, setPlayer] = useState(getPlayer(match));
+    const [match, setMatch] = useState(apiGateway.getMatch(id));
+    const [player, setPlayer] = useState(MatchController.getPlayer(match));
     const [cards, setCards] = useState(player.cards);
     
     useEffect(()=>{
@@ -36,7 +25,9 @@ function Match() {
         client.subscribe( "/user/queue/match", function (payload) { setMatch(JSON.parse(payload.body));});
     },[]);
 
-    useEffect( ()=>{setPlayer(getPlayer(match));}, [match] );
+    useEffect( ()=>{
+        setPlayer(MatchController.getPlayer(match));
+    }, [match] );
 
     useEffect( ()=>{ setCards(player.cards);}, [player] );
 
@@ -53,7 +44,7 @@ function Match() {
             if((match.stage === "INITIAL_PLACEMENT" || match.stage === "PLACEMENT") && match.turnPlayer.id === player.id){
                 for(let i=0; i<territories.length; i++){
                     if(territories[i].id === territoryId && territories[i].owner.id === player.id){                        
-                        client.send("/app/placeArmy", {}, JSON.stringify({matchId : match.id, territoryId : territories[i].id})); 
+                        MatchController.placeArmy(match, territories[i].id, setMatch);
                         break;
                     }
                 }
@@ -65,15 +56,13 @@ function Match() {
                 for(let i=0; i<territories.length; i++){
                     //Selezione del territorio attaccante
                     if(territories[i].id === territoryId && territories[i].owner.id === player.id && territories[i].clickable === true){ 
-                        console.log("ATTACKER SELECTED");                      
-                        client.send("/app/select_attacker", {}, JSON.stringify({matchId : match.id, territoryId : territories[i].id})); 
+                        MatchController.selectAttacker(match, territories[i], setMatch );
                         break;
                     }
 
                     //Selezione del territorio difensore
                     if(territories[i].id === territoryId && !territories[i].owner.id !== player.id && territories[i].clickable === true && match.attacker !== null){ 
-                        console.log("DEFENDER SELECTED");                       
-                        client.send("/app/select_defender", {}, JSON.stringify({matchId : match.id, territoryId : territories[i].id})); 
+                        MatchController.selectDefender(match, territories[i], setMatch );
                         break;
                     }
                 }
@@ -85,13 +74,13 @@ function Match() {
                 for(let i=0; i<territories.length; i++){
                     //Selezione del territorio da cui spostare le armate
                     if(territories[i].id === territoryId && territories[i].owner.id === player.id && territories[i].clickable === true && match.territoryFrom === null){                        
-                        client.send("/app/select_territory_from", {}, JSON.stringify({matchId : match.id, territoryId : territories[i].id})); 
+                        MatchController.selectTerritoryFrom(match, territories[i], setMatch);
                         break;
                     }
 
                     //Selezione del territorio su cui spostare le armate
                     if(territories[i].id === territoryId && territories[i].owner.id === player.id && territories[i].clickable === true && match.territoryFrom !== null){                        
-                        client.send("/app/select_territory_to", {}, JSON.stringify({matchId : match.id, territoryId : territories[i].id})); 
+                        MatchController.selectTerritoryTo(match, territories[i], setMatch);
                         break;
                     }
                 }
@@ -168,7 +157,7 @@ function Match() {
         }
 
         return component;
-    }
+    }    
 
     return (
         <ThemeProvider theme = {theme}>
@@ -186,7 +175,7 @@ function Match() {
                     onMouseOver = {onMouseOverHandler}
                     onMouseOut = {onMouseOutHandler}
                 />
-                <ControlPanel match = {match} player = {player} cards = {cards} />
+                <ControlPanel match = {match} player = {player} cards = {cards} setMatch = {setMatch}/>
             </div>   
         </ThemeProvider>             
     );    

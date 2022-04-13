@@ -10,7 +10,8 @@ const client = WebSocket.getClient();
 
 function Attack(props) {
     const [attackerTerritory, setAttackerTerritory] = useState(props.match.attacker);
-    const [defenderTerritory, setDefenderTerritory] = useState(props.match.defender);
+    const [defenderTerritory, setDefenderTerritory] = useState(props.match.defender); 
+    const [isRolling, setRolling] = useState(false); 
     let turnPlayer = props.match.turnPlayer.id === props.player.id;
     let showArrow = props.match.attacker !== null && props.match.defender !== null;
     let showTitle = (props.match.attacker !== null || props.match.defender !== null) || turnPlayer;
@@ -18,6 +19,7 @@ function Attack(props) {
     useEffect(()=>{
         setAttackerTerritory(props.match.attacker);
         setDefenderTerritory(props.match.defender);
+        setRolling(false);
     },[props]);
 
     const getAttacker = () => {
@@ -33,7 +35,15 @@ function Attack(props) {
         }        
 
         if(attackerTerritory != null){
-            attacker = <Territory className = "territory_margin" territory = {attackerTerritory} match={props.match} turnPlayer={turnPlayer} variant="attacker"/>
+            attacker = <Territory 
+                className = "territory_margin" 
+                territory = {attackerTerritory} 
+                match = {props.match} 
+                turnPlayer = {turnPlayer} 
+                setMatch = {props.setMatch} 
+                isRolling = {isRolling}
+                setRolling = {setRolling}
+                variant = "attacker"/>
         }
 
         return attacker;
@@ -43,7 +53,14 @@ function Attack(props) {
         let defender = null;
 
         if(defenderTerritory != null){
-            defender = <Territory className = "territory_margin" territory={defenderTerritory} match={props.match} turnPlayer={turnPlayer} variant="defender"/>
+            defender = <Territory 
+                className = "territory_margin" 
+                territory = {defenderTerritory} 
+                match = {props.match} 
+                turnPlayer = {turnPlayer}
+                setMatch = {props.setMatch}
+                isRolling = {isRolling} 
+                variant = "defender"/>
         }
 
         return defender;
