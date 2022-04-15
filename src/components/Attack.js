@@ -4,9 +4,8 @@ import Territory from "./Territory";
 import '../styles/Attack.css';
 import Arrow from "./Arrow";
 import {ArmiesTheme} from "../js/armiesPalette";
-
-const WebSocket = require("../js/webSocket").default;
-const client = WebSocket.getClient();
+import MatchController from '../js/MatchController';
+import apiGateway from "../js/apiGateway";
 
 function Attack(props) {
     const [attackerTerritory, setAttackerTerritory] = useState(props.match.attacker);
@@ -40,7 +39,9 @@ function Attack(props) {
                 territory = {attackerTerritory} 
                 match = {props.match} 
                 turnPlayer = {turnPlayer} 
-                setMatch = {props.setMatch} 
+                setMatch = {props.setMatch}
+                movedArmies = {props.movedArmies}
+                setMovedArmies = {props.setMovedArmies} 
                 isRolling = {isRolling}
                 setRolling = {setRolling}
                 variant = "attacker"/>
@@ -59,6 +60,7 @@ function Attack(props) {
                 match = {props.match} 
                 turnPlayer = {turnPlayer}
                 setMatch = {props.setMatch}
+                movedArmies = {props.movedArmies}
                 isRolling = {isRolling} 
                 variant = "defender"/>
         }
@@ -70,15 +72,16 @@ function Attack(props) {
         let button = null;
 
         const endAttacks = () => {
-            client.send("/app/displacement_stage", {}, JSON.stringify({
-                matchId : props.match.id, 
-            }));  
+            apiGateway.endsAttack(props.match);
         }
 
         if(turnPlayer === true){
-            button = <Button className = "ends_attack_button" onClick={endAttacks} variant="outlined">Ends Attacks</Button>
+            if( props.movedArmies > 0){
+                button = <Button className="ends_turn_button" onClick={() => {MatchController.confirmMove(props.match, props.movedArmies)}} variant="contained" >Confirm move</Button>;
+            }
+            else{ button = <Button className = "ends_attack_button" onClick={endAttacks} variant="outlined">Ends Attacks</Button> }
         }
-
+       
         return button;
     }
     

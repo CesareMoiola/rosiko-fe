@@ -70,19 +70,22 @@ function ControlPanel(props) {
         return playersItem;
     }
 
-    const getActionPanel = (match, player, cards) => {
+    const getActionPanel = () => {
         let actionPanel;
+        let match = props.match;
+        let player = props.player;
+        let cards = props.cards;
 
         //Mostra il pannello di azione in base alla fase di gioco
         if(player.active || match.stage === "GAME_OVER"){
             switch(match.stage){
                 //Caso di piazzamento iniziale delle armate
-                case "INITIAL_PLACEMENT" :  actionPanel = <Place3Armies player = {player} match = {match} setMatch = {props.setMatch}/>;    break;  
+                case "INITIAL_PLACEMENT" :  actionPanel = <Place3Armies player = {player} match = {match} setMatch = {props.setMatch}/>; break;  
                 case "PLACEMENT" :          actionPanel = <PlaceArmies player = {player} match = {match} setMatch = {props.setMatch} cards = {cards}/>; break;
-                case "ATTACK" :             actionPanel = <Attack player = {player} match = {match} setMatch = {props.setMatch}/>;          break;
-                case "DISPLACEMENT" :       actionPanel = <Displacement player = {player} match = {match} setMatch = {props.setMatch}/>; break;
-                case "GAME_OVER":           actionPanel = <Winner player = {player} match = {match}/>;          break;
-                default :                   actionPanel = null;                                                 break;
+                case "ATTACK" :             actionPanel = <Attack player = {player} match = {match} setMatch = {props.setMatch} movedArmies = {props.movedArmies} setMovedArmies = {props.setMovedArmies}/>; break;
+                case "DISPLACEMENT" :       actionPanel = <Displacement player = {player} match = {match} setMatch = {props.setMatch} movedArmies = {props.movedArmies} setMovedArmies = {props.setMovedArmies}/>; break;
+                case "GAME_OVER":           actionPanel = <Winner player = {player} match = {match}/>; break;
+                default :                   actionPanel = null; break;
             }
         }
         else actionPanel = <Loser player = {player} match = {match}/>;
@@ -107,7 +110,7 @@ function ControlPanel(props) {
                 {getPlayers(props.match)}
             </List>
             <Divider className="control_panel_divider"/>
-            {getActionPanel(props.match, props.player, props.cards)}
+            {getActionPanel()}
         </CardContent>
         </Card>
     );  

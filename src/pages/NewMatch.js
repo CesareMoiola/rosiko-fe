@@ -15,7 +15,7 @@ function NewMatch(){
 
   //Reindirizza alla waiting room appena si ottienne l'id del match
   useEffect(()=>{ if(matchId !== undefined){ 
-    //client.unsubscribe("new_match");
+    client.unsubscribe("new_match");
     navigate("/waiting_room/" + matchId); 
   }
   },[matchId, navigate]);
@@ -24,7 +24,8 @@ function NewMatch(){
   useEffect(()=>{
     client.subscribe(
       "/user/queue/new_match", 
-      function (payload) { setMatchId(JSON.parse(payload.body).id); } 
+      function (payload) { setMatchId(JSON.parse(payload.body).id); },
+      {id: "new_match"}
     );
   },[])
 

@@ -29,7 +29,16 @@ const getConnection = function(){
     return localStorage.getItem("client");
 }
 
-export {
+const setMatch = function(match){
+    localStorage.setItem("match", JSON.stringify(match));
+}
+
+const getMatch = function(){
+    let stringify = localStorage.getItem("match");
+    return JSON.parse(stringify);
+}
+
+export default{
     setPlayerId,
     getPlayerId,
     setMatchId,
@@ -37,5 +46,7 @@ export {
     setUser,
     getUser,
     setConnection,
-    getConnection
+    getConnection,
+    setMatch,
+    getMatch
 };

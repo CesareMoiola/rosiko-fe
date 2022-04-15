@@ -10,4 +10,5 @@
 
 .ends_turn_button{
     margin-top: 16px !important;
+    min-width: 150px !important;
 }

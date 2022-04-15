@@ -9,24 +9,30 @@ import '../styles/Match.css';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { getTheme } from "../js/armiesPalette";
 import MatchController from '../js/MatchController';
-import apiGateway from '../js/apiGateway';
 
+const Data = require("../js/data").default;
 const WebSocket = require("../js/webSocket").default;
 const client = WebSocket.getClient();
 
 function Match() { 
     let { id } = useParams();
-    const [match, setMatch] = useState(apiGateway.getMatch(id));
+    const [match, setMatch] = useState(Data.getMatch());
     const [player, setPlayer] = useState(MatchController.getPlayer(match));
     const [cards, setCards] = useState(player.cards);
+    const [placedArmies, setPlacedArmies] = useState({});   //Armate piazzate durante il turno
+    const [movedArmies, setMovedArmies] = useState(0);      //Armate mosse durante il turno
     
     useEffect(()=>{
         //Iscrizione al websocket
-        client.subscribe( "/user/queue/match", function (payload) { setMatch(JSON.parse(payload.body));});
-    },[]);
+        client.subscribe( "/user/queue/match", function (payload) { 
+            setMatch(JSON.parse(payload.body));
+        });
+    },[id]);
 
     useEffect( ()=>{
         setPlayer(MatchController.getPlayer(match));
+        setPlacedArmies({});    //Reset
+        setMovedArmies(0);      //Reset
     }, [match] );
 
     useEffect( ()=>{ setCards(player.cards);}, [player] );
@@ -38,13 +44,11 @@ function Match() {
             let territories = match.map.territories;
             let territoryId = e.target.parentElement.id;
 
-            console.log("Stato: " + territoryId)
-
             //Piazzamento armate durante il proprio turno
             if((match.stage === "INITIAL_PLACEMENT" || match.stage === "PLACEMENT") && match.turnPlayer.id === player.id){
                 for(let i=0; i<territories.length; i++){
                     if(territories[i].id === territoryId && territories[i].owner.id === player.id){                        
-                        MatchController.placeArmy(match, territories[i].id, setMatch);
+                        MatchController.placeArmy(match, territories[i].id, placedArmies, setPlacedArmies);
                         break;
                     }
                 }
@@ -171,11 +175,13 @@ function Match() {
                     className="map"  
                     match = {match}
                     player = {player}
+                    placedArmies = {placedArmies}
+                    movedArmies = {movedArmies}
                     onClick = {onClickHandler}
                     onMouseOver = {onMouseOverHandler}
                     onMouseOut = {onMouseOutHandler}
                 />
-                <ControlPanel match = {match} player = {player} cards = {cards} setMatch = {setMatch}/>
+                <ControlPanel match = {match} player = {player} cards = {cards} setMatch = {setMatch} movedArmies = {movedArmies} setMovedArmies = {setMovedArmies}/>
             </div>   
         </ThemeProvider>             
     );    

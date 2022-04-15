@@ -43,25 +43,6 @@ const getJoinableMatches = function(){
     return matches;
 }
 
-const joinMatch = function(matchId, playerName){
-    const url = endPoint + "/join_match";
-    var request = new XMLHttpRequest();
-    var playerId = null;
-    
-    request.open("GET", url, false);
-    request.setRequestHeader("Content-Type", "application/json");
-    request.send(JSON.stringify({ matchId: matchId, playerName: playerName}));     
-
-    if (request.status === 200) {
-        playerId = parseInt(request.responseText);
-    }
-    else{
-        console.log("ERROR on " + url + " status: " + request.status);
-    }
-
-    return playerId;
-}
-
 const getPlayer = function(matchId, playerId){
     const url = endPoint + "/get_player";
     var request = new XMLHttpRequest();
@@ -118,16 +99,8 @@ const getMatch = function(matchId){
     return match;
 }
 
-const placeArmy = function(matchId, territoryId){
-    client.send("/app/placeArmy", {}, JSON.stringify({matchId : matchId, territoryId : territoryId}));   
-}
-
-const setArmies = function(matchId, territoryId, armies){
-    client.send("/app/set_armies", {}, JSON.stringify({matchId : matchId, territoryId : territoryId, armies: armies}));   
-}
-
-const moveArmy = function(matchId, armies){
-    client.send("/app/move_armies", {}, JSON.stringify({matchId : matchId, armies : armies})); 
+const placeArmies = function(matchId, placedArmies){
+    client.send("/app/place_armies", {}, JSON.stringify({matchId : matchId, armies : placedArmies}));   
 }
 
 const attack = function(matchId, diceNumber){
@@ -154,20 +127,37 @@ const selectTerritoryTo = function(matchId, territoryId){
     client.send("/app/select_territory_to", {}, JSON.stringify({matchId : matchId, territoryId : territoryId})); 
 }
 
+const endsTurn = (match) => {
+    client.send("/app/ends_turn", {}, JSON.stringify({  matchId : match.id }));     
+}
+
+const endsAttack = (match) => {
+    client.send("/app/displacement_stage", {}, JSON.stringify({ matchId : match.id, }));  
+}
+
+const confirmMove = (match, movedArmies) => {
+    client.send("/app/confirm_move", {}, JSON.stringify({  matchId : match.id, territoryFrom : match.territoryFrom.id, territoryTo: match.territoryTo.id, movedArmies: movedArmies })); 
+}
+
+const playCards = (match, player, cardSet) => {
+    client.send("/app/play_cards", {}, JSON.stringify({matchId : match.id, playerId : player.id, card_1 : cardSet[0].id, card_2 : cardSet[1].id, card_3 : cardSet[2].id}));
+}
+
 export default {
     newMatch,
     getJoinableMatches,
-    joinMatch,
     getPlayer,
     getMatch,
     getPlayers,
-    placeArmy,
-    moveArmy,
+    placeArmies,
     attack,
-    setArmies,
     selectAttacker,
     selectDefender,
     deselectTerritory,
     selectTerritoryFrom,
-    selectTerritoryTo
+    selectTerritoryTo,
+    endsTurn,
+    confirmMove,
+    endsAttack,
+    playCards
 };

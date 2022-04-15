@@ -8,13 +8,12 @@ import '../styles/WaitingRoom.css';
 const WebSocket = require("../js/webSocket").default;
 const client = WebSocket.getClient();
 const ApiGateway = require("../js/apiGateway").default;
+const Data = require("../js/data").default;
 
 function WaitingRoom() {   
 
     let { id } = useParams();
-
     const [match, setMatch] = useState(ApiGateway.getMatch(id));    
-
     const navigate = useNavigate();
 
     //Iscrizione all'endpoint per ricevere aggiornamenti sul match
@@ -23,15 +22,17 @@ function WaitingRoom() {
             client.subscribe("/user/queue/match", payload => {
                 let updatedMatch = JSON.parse(payload.body);
 
-                if(updatedMatch.state === 'STARTED'){
-                    //client.unsubscribe("match");
+                if(updatedMatch.state === 'STARTED'){      
+                    Data.setMatch(ApiGateway.getMatch(id));              
                     navigate("/match/" + updatedMatch.id);
+                    client.unsubscribe("waiting_room");
                 }
                 else{
                     setMatch(updatedMatch);
                 }
-            }); 
-        }, [navigate]
+            },
+            {id: "waiting_room"}); 
+        }, [navigate, id]
     );              
 
     const getPlayers = () => {

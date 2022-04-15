@@ -11,7 +11,7 @@ const client = WebSocket.getClient();
 
 const JoinMatch = () => {
   const navigate = useNavigate();
-  const [matches, setMatches] = useState(ApiGateway.getJoinableMatches());
+  const [matches, setMatches] = useState([]);
   const [matchId, setMatchId] = useState(undefined);
   const [playerName, setPlayerName] = useState("");
   
@@ -24,6 +24,8 @@ const JoinMatch = () => {
         },
         {id: "joinableMatches"}
       );
+
+      setMatches(ApiGateway.getJoinableMatches());
     }, []
   )
 
@@ -31,7 +33,7 @@ const JoinMatch = () => {
     event.preventDefault(); //Evita che viene ricaricata la pagina
     client.send("/app/join_match", {}, JSON.stringify({matchId : matchId, playerName : playerName}));
     navigate("/waiting_room/" + matchId);
-    //client.unsubscribe("joinableMatches");
+    client.unsubscribe("joinableMatches");
   }
 
   const handlePlayerName = event => {

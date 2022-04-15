@@ -4,8 +4,7 @@ import { Typography, Card, Divider, Button } from "@mui/material";
 import Logo from "./Logo";
 import { useTheme } from '@mui/styles';
 
-const WebSocket = require("../js/webSocket").default;
-const client = WebSocket.getClient();
+const ApiGateway = require("../js/apiGateway").default;
 
 function PlaceArmies(props) {
 
@@ -25,7 +24,7 @@ function PlaceArmies(props) {
         }
 
         if(cardSet.length === 3){
-            client.send("/app/play_cards", {}, JSON.stringify({matchId : props.match.id, playerId : props.player.id, card_1 : cardSet[0].id, card_2 : cardSet[1].id, card_3 : cardSet[2].id}));
+            ApiGateway.playCards(props.match, props.player, cardSet);
         }
     }
 

@@ -52,23 +52,9 @@ const getDice = (props) => {
     return dice;
 }
 
-//Ritorna il numero corretto di armate
-const getArmies = (props) => {
-    let armies = props.territory.armies;
-    
-    if(props.match.territoryFrom !== null && props.match.territoryFrom.id === props.territory.id) {
-        armies -= props.match.moveArmies;
-    }
-    if(props.match.territoryTo !== null && props.match.territoryTo.id === props.territory.id) armies += props.match.moveArmies; 
-
-    
-    return armies;
-}
-
 
 const Terrirory = (props) => {
     const [dices, setDices] = useState(getDice(props));
-    const [moveArmies, setMoveArmies] = useState(props.match.moveArmies);
     let turnPlayer = props.turnPlayer;
 
     useEffect( () => { setDices(getDice(props)); },[props]);
@@ -102,7 +88,7 @@ const Terrirory = (props) => {
                     className="exit_button" 
                     aria-label="exit" 
                     size="small" 
-                    onClick={()=>{MatchController.deselectTerritory(props.match, props.territory, props.setMatch);}}>                
+                    onClick={()=>{MatchController.deselectTerritory(props.match, props.territory, props.setMatch, props.setMovedArmies);}}>                
                     <CloseIcon sx={{color: ArmiesTheme[props.territory.color].contrastText}}/>
                 </IconButton>   
             );                     
@@ -214,9 +200,8 @@ const Terrirory = (props) => {
         let component = null
 
         const handleSliderChange = (event, newValue) => {
-            if(moveArmies !== newValue){                
-                setMoveArmies(newValue);
-                MatchController.moveArmy(props.match, newValue, props.setMatch);
+            if(props.movedArmies !== newValue){
+                props.setMovedArmies(newValue);
             }
         };
 
@@ -225,8 +210,10 @@ const Terrirory = (props) => {
             && props.match.territoryFrom.owner.id === props.match.territoryTo.owner.id 
             && props.territory.id === props.match.territoryFrom.id
         ){            
-            let minArmies = countDice(props.match.diceAttacker);
+            let minArmies = 0;
             let maxArmies = props.match.attacker.armies -1;
+
+            if(props.movedArmies < minArmies) props.setMovedArmies(minArmies);
             
             if(minArmies !== maxArmies){
                 component = (
@@ -252,9 +239,8 @@ const Terrirory = (props) => {
         let component = null;
 
         const handleSliderChange = (event, newValue) => {
-            if(moveArmies !== newValue){                
-                setMoveArmies(newValue);
-                MatchController.moveArmy(props.match, newValue, props.setMatch);
+            if(props.movedArmies !== newValue){  
+                MatchController.moveArmies(props.match, newValue, props.setMovedArmies);
             }
         };
 
@@ -298,7 +284,7 @@ const Terrirory = (props) => {
     return (
         <Card className="territory" style={{backgroundColor: ArmiesTheme[props.territory.color].main}}>
             {getCloseButton()}
-            <Chip className="armies_chip" size="small" label={getArmies(props)}/>
+            <Chip className="armies_chip" size="small" label={MatchController.getArmies(props.match, props.territory, props.placedArmies, props.movedArmies)}/>
             <CardContent className="territory_card_content">                
                 <Typography className="title_card" component="div" textAlign="center" sx={{color: ArmiesTheme[props.territory.color].contrastText}}>
                     {props.territory.name}

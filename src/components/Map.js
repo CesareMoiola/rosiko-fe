@@ -1,5 +1,6 @@
 import * as React from "react"
 import { ArmiesTheme } from "../js/armiesPalette";
+import MatchController from "../js/MatchController";
 
 const Map = (props) => {
 
@@ -52,13 +53,7 @@ const Map = (props) => {
   }
 
   const getArmy = (id) => {
-    let territory = getTerritory(id);
-    let armies = territory.armies;
-
-    if(props.match.territoryFrom !== null && props.match.territoryFrom.id === id) armies -= props.match.moveArmies;
-    if(props.match.territoryTo !== null && props.match.territoryTo.id === id) armies += props.match.moveArmies;
-
-    return armies;
+    return MatchController.getArmies(props.match, getTerritory(id), props.placedArmies, props.movedArmies);
   }
 
   return(

@@ -4,9 +4,7 @@ import { Button, Typography, Divider } from "@mui/material";
 import Territory from "./Territory";
 import Arrow from "./Arrow";
 import {ArmiesTheme} from "../js/armiesPalette";
-
-const WebSocket = require("../js/webSocket").default;
-const client = WebSocket.getClient();
+import MatchController from "../js/MatchController";
 
 function Displacement(props) {
     const [territoryFrom, setTerritoryFrom] = useState(props.match.territoryFrom);
@@ -35,6 +33,8 @@ function Displacement(props) {
                 turnPlayer={turnPlayer} 
                 variant="territoryFrom"
                 setMatch={props.setMatch}
+                movedArmies = {props.movedArmies}
+                setMovedArmies = {props.setMovedArmies}
                 />
         }
 
@@ -51,7 +51,9 @@ function Displacement(props) {
                 match={props.match} 
                 turnPlayer={turnPlayer} 
                 variant="territoryTo"
-                setMatch={props.setMatch}/>
+                setMatch={props.setMatch}
+                movedArmies = {props.movedArmies}
+            />
         }
 
         return territory;
@@ -60,12 +62,9 @@ function Displacement(props) {
     const getEndsTurnButton = () => {
         let button = null;
 
-        const endsTurn = () => {
-            client.send("/app/ends_turn", {}, JSON.stringify({  matchId : props.match.id }));  
-        }
-
         if(turnPlayer === true){
-            button = <Button className="ends_turn_button" onClick={endsTurn} variant="outlined" >Ends Turn</Button>
+            if(props.movedArmies <= 0) {button = <Button className="ends_turn_button" onClick={() => {MatchController.endsTurn(props.match)}} variant="outlined">Ends turn</Button>;}
+            else{ button = <Button className="ends_turn_button" onClick={() => {MatchController.confirmMove(props.match, props.movedArmies)}} variant="contained" >Confirm move</Button> }
         }
 
         return button;
