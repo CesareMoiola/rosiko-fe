@@ -17,7 +17,7 @@ const Winner = (props) => {
       message = <Typography  variant="h4" color = {theme.palette.primary.contrastText} fontWeight="bold" textAlign="center">You Won !!!<br/><span className="win_emoji" role="img" aria-label="cups">🏆🏆🏆</span></Typography>;
     }
     else{
-      message = <Typography  variant="h4" color = {theme.palette.primary.contrastText} fontWeight="bold" textAlign="center">Player {props.match.winner.name} won<br/></Typography>;
+      message = <Typography  variant="h4" color = {theme.palette.primary.contrastText} fontWeight="bold" textAlign="center">{props.match.winner.name} won<br/></Typography>;
     }
     
     return message;

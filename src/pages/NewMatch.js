@@ -6,6 +6,10 @@ import {useNavigate} from 'react-router-dom';
 const WebSocket = require("../js/webSocket").default;
 const client = WebSocket.getClient();
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function NewMatch(){
   const [matchName, setMatchName] = useState('');
   const [password, setPassword] = useState('');
@@ -54,7 +58,7 @@ function NewMatch(){
           autoComplete="off"
           id = "matchName"
           name="matchName"
-          value={matchName}
+          value={capitalizeFirstLetter(matchName)}
           onChange={handleMatchName}/><br/>
         <TextField 
           className="new-match-input"
@@ -73,7 +77,7 @@ function NewMatch(){
           autoComplete="off"
           id = "playerName"
           name="playerName"
-          value={playerName}
+          value={capitalizeFirstLetter(playerName)}
           onChange={handlePlayerName}/><br/>
         <Button 
           className="home-button" 

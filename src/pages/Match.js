@@ -151,7 +151,9 @@ function Match() {
                     key={cards[i].id}
                     className="gameCard" 
                     onClick = {() => selectCard(cards[i].id)}
-                    card={cards[i]}>
+                    card={cards[i]}
+                    player={player}
+                    territories = {match.map.territories}>
                 </GameCard>
             )
         }

@@ -9,6 +9,10 @@ const ApiGateway = require("../js/apiGateway").default;
 const WebSocket = require("../js/webSocket").default;
 const client = WebSocket.getClient();
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 const JoinMatch = () => {
   const navigate = useNavigate();
   const [matches, setMatches] = useState([]);
@@ -85,7 +89,7 @@ const JoinMatch = () => {
           autoComplete="off"
           id = "playerName"
           name="playerName"
-          value={playerName ? playerName : ""}
+          value={playerName ? capitalizeFirstLetter(playerName) : ""}
           onChange={handlePlayerName}/>
           <br/>
           <Button 

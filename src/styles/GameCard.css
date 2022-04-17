@@ -11,3 +11,24 @@
     margin-top: 16px !important;
     margin-bottom: 16px !important;
 }
+
+.image{
+    align-items: center;
+    width: 100% !important;
+    height: 90px !important;
+}
+
+.card_divider{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.game_card_content{
+    text-align: center;
+}
+
+.card_territory_name{
+    opacity: 0.6;
+}

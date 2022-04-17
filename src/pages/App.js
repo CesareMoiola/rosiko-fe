@@ -7,6 +7,7 @@ import Match from './Match.js';
 import React from 'react';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import JoinMatch from './JoinMatch.js';
+import { ArmiesTheme } from "../js/armiesPalette";
 
 const theme = createTheme(
   {
@@ -15,7 +16,7 @@ const theme = createTheme(
         main:"#fafafa", 
         light:"#ffffff", 
         dark: "#eeeeee", 
-        contrastText: "#000000"
+        contrastText: ArmiesTheme.GRAY.dark
       }
     },
     shape: {

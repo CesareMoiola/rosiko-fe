@@ -1,6 +1,7 @@
 import React from "react";
 import '../styles/GameCard.css';
 import { Card, CardContent, Divider, Typography} from "@mui/material";
+import TerritoryImage from "./TerritoryImage";
 
 const getElevation = (card) => {
   let elevation = 4;
@@ -17,14 +18,13 @@ const getMargin = (card) => {
 function GameCard(props) {
   return (
     <Card className="gameCard" elevation={getElevation(props.card)} onClick={props.onClick} sx={{marginBottom: getMargin(props.card)}}>
-      <CardContent>
+      <CardContent className="game_card_content">
         <Typography className="cardTitle" variant="h6" component="div" fontWeight="bold" align="center">
           {props.card.cardType}
         </Typography>
         <Divider className="card_divider"/>
-        <Typography variant="body2">
-          {props.card.territoryName}
-        </Typography>
+        <TerritoryImage className="image" card = {props.card} territories = {props.territories} player={props.player}/>
+        <Typography className="card_territory_name" variant="caption"> {props.card.territoryName} </Typography>
       </CardContent>
     </Card>
   );  
