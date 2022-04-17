@@ -8,6 +8,7 @@ import Loser from "./Loser";
 import Attack from "./Attack";
 import Displacement from "./Displacement";
 import { ArmiesTheme } from "../js/armiesPalette";
+import FlagIcon from '@mui/icons-material/Flag';
 
 function ControlPanel(props) {
 
@@ -100,9 +101,7 @@ function ControlPanel(props) {
                 <Typography variant="h5" fontWeight="bold">
                     Rosiko
                 </Typography>
-                <IconButton size="small" fontSize="small">
-                    <span role="img" aria-label="surrender">🏳️</span>
-                </IconButton>
+                <FlagIcon/>
             </div>
             
             <Divider className="control_panel_divider"/>

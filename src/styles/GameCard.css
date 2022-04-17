@@ -15,7 +15,13 @@
 .image{
     align-items: center;
     width: 100% !important;
-    height: 90px !important;
+    height: 70px !important;
+}
+
+.symbol_image{
+    align-items: center;
+    width: auto !important;
+    height: 70px !important;
 }
 
 .card_divider{

@@ -57,7 +57,9 @@ const Terrirory = (props) => {
     const [dices, setDices] = useState(getDice(props));
     let turnPlayer = props.turnPlayer;
 
-    useEffect( () => { setDices(getDice(props)); },[props]);
+    useEffect( () => {
+        setDices(getDice(props)); 
+    },[props]);
 
     //Ritorna il pulsante di attacco nel casso sia il territorio attaccante
     const getAttackButton = () =>{
@@ -163,6 +165,7 @@ const Terrirory = (props) => {
                     >
                     <Dice 
                         className="dice" 
+                        isRolling={props.isRolling}
                         value={showDice[0]} 
                         fill={ArmiesTheme[props.territory.color].contrastText}
                         win={isWinner(0)}/>
@@ -174,6 +177,7 @@ const Terrirory = (props) => {
                     color = "primary">
                     <Dice 
                         className="dice" 
+                        isRolling={props.isRolling}
                         value={showDice[1]} 
                         fill={ArmiesTheme[props.territory.color].contrastText}
                         win={isWinner(1)}/> 
@@ -186,6 +190,7 @@ const Terrirory = (props) => {
                 >
                     <Dice 
                         className="dice" 
+                        isRolling={props.isRolling}
                         value={showDice[2]} 
                         fill={ArmiesTheme[props.territory.color].contrastText}
                         win={isWinner(2)}
