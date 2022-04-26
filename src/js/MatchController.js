@@ -3,8 +3,6 @@ import countDice from "../js/diceUtils";
 
 const WebSocket = require("../js/webSocket").default;
 
-let antilag = false;
-
 const getPlayer = (match) => {
     let id = WebSocket.getUserId();
     let returnPlayer = null;
@@ -58,7 +56,7 @@ const moveArmies = (match, armies, setMovedArmies) => {
     }    
 }
 
-const attack = (match, attackerDice, setRolling) => {    
+const attack = (match, attackerDice, setRolling) => {
     let diceNumber = countDice(attackerDice);
 
     setRolling(true);
@@ -68,91 +66,28 @@ const attack = (match, attackerDice, setRolling) => {
 }
 
 const selectAttacker = (match, territory, setMatch) => {
-    if(antilag){
-        let newMatch = JSON.parse(JSON.stringify(match));
-
-        newMatch.attacker = territory;
-        newMatch.defender = null;
-        newMatch.territoryTo = null;
-        newMatch.territoryFrom = null;
-        setMatch(newMatch);
-    }
-
     //Chiamata al backend
-    apiGateway.selectAttacker(match.id, territory.id);
+    apiGateway.selectAttacker(match.id, territory.id);  
 }
 
 const selectDefender = (match, territory, setMatch) => {
-    if(antilag){
-        let newMatch = JSON.parse(JSON.stringify(match));
-    
-        newMatch.defender = territory;
-        newMatch.territoryTo = null;
-        newMatch.territoryFrom = null;
-        setMatch(newMatch);
-    }    
-
     //Chiamata al backend
-    apiGateway.selectDefender(match.id, territory.id);
+    apiGateway.selectDefender(match.id, territory.id);  
 }
 
 const deselectTerritory = (match, territory, setMatch, setMovedArmies) => {
-    if(antilag){
-        let newMatch = JSON.parse(JSON.stringify(match));
-    
-        if(newMatch.attacker && newMatch.attacker.id === territory.id){
-            newMatch.attacker = null;
-            newMatch.defender = null;
-        } 
-
-        if(newMatch.defender && newMatch.defender.id === territory.id){
-            newMatch.defender = null;
-        } 
-
-        if(newMatch.territoryFrom && newMatch.territoryFrom.id === territory.id){
-            newMatch.territoryFrom = null;
-            newMatch.territoryTo = null;
-        } 
-
-        if(newMatch.territoryTo && newMatch.territoryTo.id === territory.id){
-            newMatch.territoryTo = null;
-        } 
-
-        setMatch(newMatch);
-        setMovedArmies(0);
-    }
-
     //Chiamata al backend
-    apiGateway.deselectTerritory(match.id, territory.id);
+    apiGateway.deselectTerritory(match.id, territory.id); 
 }
 
 const selectTerritoryFrom = (match, territory, setMatch) => {
-    if(antilag){
-        let newMatch = JSON.parse(JSON.stringify(match));
-
-        newMatch.territoryFrom = territory;
-        newMatch.attacker = null;
-        newMatch.defender = null;
-        newMatch.territoryTo = null;
-        setMatch(newMatch);
-    }
-
     //Chiamata al backend
-    apiGateway.selectTerritoryFrom(match.id, territory.id);
+    apiGateway.selectTerritoryFrom(match.id, territory.id); 
 }
 
 const selectTerritoryTo = (match, territory, setMatch) => {
-    if(antilag){
-        let newMatch = JSON.parse(JSON.stringify(match));
-    
-        newMatch.territoryTo = territory;
-        newMatch.attacker = null;
-        newMatch.defender = null;
-        setMatch(newMatch);
-    }
-
     //Chiamata al backend
-    apiGateway.selectTerritoryTo(match.id, territory.id);
+    apiGateway.selectTerritoryTo(match.id, territory.id); 
 }
 
 //Ritorna il numero corretto di armate
@@ -173,8 +108,44 @@ const endsTurn = (match) => {
     apiGateway.endsTurn(match);
 }
 
-const confirmMove = (match, movedArmies) => {
+const confirmMove = (match, movedArmies, map) => {
     apiGateway.confirmMove(match, movedArmies);
+}
+
+const trisBonusCalculator = (player, cards, map) =>{
+    let type1 = cards[0].cardType;
+    let type2 = cards[1].cardType;
+    let type3 = cards[2].cardType;
+    let bonus = 0;
+    
+    //Bonus dovuto alle carte
+    if(type1 === "TRACTOR" && type2 === "TRACTOR" && type3 === "TRACTOR" ){ bonus = 4 }
+    if(type1 === "FARMER" && type2 === "FARMER" && type3 === "FARMER" ){ bonus = 6 }
+    if(type1 === "COW" && type2 === "COW" && type3 === "COW" ){ bonus = 8 }
+    if( (type1 !== "JOLLY" && type1 !== type2 && type1 !== type3) &&
+        (type2 !== "JOLLY" && type2 !== type3 && type2 !== type1) &&
+        (type3 !== "JOLLY" && type3 !== type1 && type3 !== type2)
+    ){ bonus = 10 }
+    if( (type1 === "JOLLY" && type2 === type3 && type2!== "JOLLY")||
+        (type2 === "JOLLY" && type1 === type3 && type1!== "JOLLY")||
+        (type3 === "JOLLY" && type1 === type2 && type1!== "JOLLY")
+    ){ bonus = 12 }
+
+    //Bonus dovuto ai territori posseduti
+    if(bonus > 0){
+        let territories = map.territories;
+        
+        for(let j=0; j<cards.length; j++){
+            for(let i=0; i<territories.length; i++){                
+                if(territories[i].id === cards[j].territoryId && territories[i].owner.id === player.id){
+                    bonus += 2;
+                    i=territories.length;
+                }
+            }
+        }
+    }
+
+    return bonus;
 }
 
 export default {
@@ -189,5 +160,6 @@ export default {
     selectTerritoryTo,
     getArmies,
     endsTurn,
-    confirmMove
+    confirmMove,
+    trisBonusCalculator
 };

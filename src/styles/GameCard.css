@@ -21,7 +21,22 @@
 .symbol_image{
     align-items: center;
     width: auto !important;
-    height: 70px !important;
+    max-height: 70px !important;
+}
+
+.jolly_image{
+    align-items: center;
+    width: auto !important;
+    height: 65px !important;
+}
+
+.jolly_game_card_content{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: calc(100% -4px);
 }
 
 .card_divider{

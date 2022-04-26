@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, TextField } from '@mui/material';
 import '../styles/NewMatch.css';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, Link as RouterLink} from 'react-router-dom';
 
 const WebSocket = require("../js/webSocket").default;
 const client = WebSocket.getClient();
@@ -19,76 +19,103 @@ function NewMatch(){
 
   //Reindirizza alla waiting room appena si ottienne l'id del match
   useEffect(()=>{ if(matchId !== undefined){ 
-    client.unsubscribe("new_match");
-    navigate("/waiting_room/" + matchId); 
-  }
-  },[matchId, navigate]);
+    try{
+      client.unsubscribe("new_match");
+      navigate("/waiting_room/" + matchId); 
+    }
+    catch(e){
+      console.error(e);
+      navigate("/"); 
+    }    
+  }},[matchId, navigate]);
 
   //Iscrizione al websocket
   useEffect(()=>{
-    client.subscribe(
-      "/user/queue/new_match", 
-      function (payload) { setMatchId(JSON.parse(payload.body).id); },
-      {id: "new_match"}
-    );
-  },[])
+    try{
+      client.subscribe(
+        "/user/queue/new_match", 
+        function (payload) { setMatchId(JSON.parse(payload.body).id); },
+        {id: "new_match"}
+      );
+    }
+    catch(e){
+      console.error(e);
+      navigate("/"); 
+    }    
+  },[navigate]);
 
   const handleMatchName = event => {
-    setMatchName(event.target.value);
+    if(event.target.value.length <= 12) setMatchName(event.target.value);
   }
   const handlePassword = event => {
-    setPassword(event.target.value);
+    if(event.target.value.length <= 12) setPassword(event.target.value);
   }
   const handlePlayerName = event => {
-    setPlayerName(event.target.value);
+    if(event.target.value.length <= 12) setPlayerName(event.target.value);
   }  
   const newMatchSubmit = event =>{     
     event.preventDefault(); //Evita che viene ricaricata la pagina
-    client.send("/app/new_match", {}, JSON.stringify({matchName: matchName, password: password, playerName: playerName}));
+    try{
+      client.send("/app/new_match", {}, JSON.stringify({matchName: matchName, password: password, playerName: playerName}));
+    }
+    catch(e){
+      console.error(e);
+      navigate("/"); 
+    } 
   }  
 
   return (
     <div className="new-match">
-      <h1>New match</h1>
-      <form onSubmit={newMatchSubmit}>
-        <TextField 
-          className="new-match-input"
-          label="Match name" 
-          variant="outlined" 
-          autoComplete="off"
-          id = "matchName"
-          name="matchName"
-          value={capitalizeFirstLetter(matchName)}
-          onChange={handleMatchName}/><br/>
-        <TextField 
-          className="new-match-input"
-          label="Password" 
-          variant="outlined" 
-          autoComplete="off"
-          type="password"
-          id = "password"
-          name="password"
-          value={password}
-          onChange={handlePassword}/><br/>
-        <TextField 
-          className="new-match-input"
-          label="Player name" 
-          variant="outlined"
-          autoComplete="off"
-          id = "playerName"
-          name="playerName"
-          value={capitalizeFirstLetter(playerName)}
-          onChange={handlePlayerName}/><br/>
-        <Button 
-          className="home-button" 
-          type="submit"
-          variant="contained" 
-          disabled = {!(
-            matchName.replaceAll(' ','') !== '' 
-            && playerName.replaceAll(' ','') !== '' 
-          )}
-          >Done</Button>
-      </form>
+      <div className="menu">
+        <h1 className="title">New match</h1>
+        <form onSubmit={newMatchSubmit}>
+          <TextField 
+            className="new-match-input"
+            label="Match name" 
+            variant="outlined" 
+            autoComplete="off"
+            id = "matchName"
+            name="matchName"
+            value={capitalizeFirstLetter(matchName)}
+            onChange={handleMatchName}/><br/>
+          <TextField 
+            className="new-match-input"
+            label="Password" 
+            variant="outlined" 
+            autoComplete="off"
+            type="password"
+            id = "password"
+            name="password"
+            value={password}
+            onChange={handlePassword}/><br/>
+          <TextField 
+            className="new-match-input"
+            label="Player name" 
+            variant="outlined"
+            autoComplete="off"
+            id = "playerName"
+            name="playerName"
+            value={capitalizeFirstLetter(playerName)}
+            onChange={handlePlayerName}/><br/>
+          <div className="buttons">
+            <Button 
+              className="home-button" 
+              variant="outlined"
+              component={RouterLink}
+              to="/"
+              >Back</Button>
+            <Button 
+              className="home-button" 
+              type="submit"
+              variant="contained" 
+              disabled = {!(
+                matchName.replaceAll(' ','') !== '' 
+                && playerName.replaceAll(' ','') !== '' 
+              )}
+              >Done</Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

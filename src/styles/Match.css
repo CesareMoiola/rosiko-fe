@@ -1,30 +1,38 @@
 .match{
     position: relative !important;  
     display: flex;
-    overflow: hidden !important;
+    overflow: hidden;
     height: 100vh !important;
     width: 100vw !important;
-    background-color: #f7f7f7;
 }
 
 .map{   
     flex-grow: 3;
-    max-height: 95vh !important;
+    padding: 0;
+    overflow: auto !important;
+    margin: 16px;
+    z-index: 0;
 }
 
 .controlPanel{
     flex-grow: 1;
-    height: calc(100vh - 32px);
     z-index: 1;
     margin: 16px;
 }
 
-.mission{
+.mission_div{
+    display: flex;
     position: absolute;
-    bottom: -180px;
+    bottom: -220px;
     left: 16px;
-    z-index: 2;
+    padding-bottom: 40px;
     transition: transform 0.5s !important;
+    z-index: 2;
+}
+
+.mission{
+    margin-left: 16px;
+    z-index: 2;
 }
 
 .gameCard{
@@ -33,7 +41,7 @@
     transition: all 0.5s !important;
 }
 
-.mission:hover{
+.mission_div:hover{
     transform: translate(0px,-196px);
 }
 
@@ -46,8 +54,8 @@
 .cardList:not(:hover) > .gameCard{ margin-bottom: 0px !important}
 
 .cardList{
-    left: 218px;
-    bottom: -180px;
+    left: 226px;
+    bottom: -220px;
     min-height: 230px;
     z-index: 2;
     position: absolute;
@@ -56,5 +64,5 @@
     align-items: flex-end !important;
     transition: all 0.5s !important;
     margin: 0;
-    padding: 0;
+    padding: 0 16px 40px 0;
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import ControlPanel from "../components/ControlPanel";
 import Map from "../components/Map";
 //import Map from "../components/Map2";
@@ -14,28 +14,47 @@ const Data = require("../js/data").default;
 const WebSocket = require("../js/webSocket").default;
 const client = WebSocket.getClient();
 
+
 function Match() { 
+    const navigate = useNavigate();
     let { id } = useParams();
     const [match, setMatch] = useState(Data.getMatch());
     const [player, setPlayer] = useState(MatchController.getPlayer(match));
-    const [cards, setCards] = useState(player.cards);
+    const [cards, setCards] = useState([]);
     const [placedArmies, setPlacedArmies] = useState({});   //Armate piazzate durante il turno
     const [movedArmies, setMovedArmies] = useState(0);      //Armate mosse durante il turno
-    
+        
+
     useEffect(()=>{
-        //Iscrizione al websocket
-        client.subscribe( "/user/queue/match", function (payload) { 
+        try{
+            //Iscrizione al websocket
+            client.subscribe( "/user/queue/match", function (payload) { 
             setMatch(JSON.parse(payload.body));
         });
-    },[id]);
+        }
+        catch(e){
+          console.error(e);
+          navigate("/"); 
+        }
+    },[id, navigate]);
 
     useEffect( ()=>{
-        setPlayer(MatchController.getPlayer(match));
-        setPlacedArmies({});    //Reset
-        setMovedArmies(0);      //Reset
-    }, [match] );
+        try{
+            setPlayer(MatchController.getPlayer(match));
+            setPlacedArmies({});    //Reset
+            setMovedArmies(0);      //Reset
+        }
+        catch(e){
+          console.error(e);
+          navigate("/"); 
+        }
+    }, [match, navigate] );
 
-    useEffect( ()=>{ setCards(player.cards);}, [player] );
+    useEffect( ()=>{ 
+        if(player !== null){setCards(player.cards)}
+    }, [player, navigate]);
+
+    if(player === null) {console.error("Player null exception"); navigate("/"); return null;}
 
     let theme = createTheme(getTheme(player.color));
 
@@ -47,8 +66,14 @@ function Match() {
             //Piazzamento armate durante il proprio turno
             if((match.stage === "INITIAL_PLACEMENT" || match.stage === "PLACEMENT") && match.turnPlayer.id === player.id){
                 for(let i=0; i<territories.length; i++){
-                    if(territories[i].id === territoryId && territories[i].owner.id === player.id){                        
-                        MatchController.placeArmy(match, territories[i].id, placedArmies, setPlacedArmies);
+                    if(territories[i].id === territoryId && territories[i].owner.id === player.id){
+                        try{                   
+                            MatchController.placeArmy(match, territories[i].id, placedArmies, setPlacedArmies);
+                        }
+                        catch(e){
+                          console.error(e);
+                          navigate("/"); 
+                        }
                         break;
                     }
                 }
@@ -60,13 +85,21 @@ function Match() {
                 for(let i=0; i<territories.length; i++){
                     //Selezione del territorio attaccante
                     if(territories[i].id === territoryId && territories[i].owner.id === player.id && territories[i].clickable === true){ 
-                        MatchController.selectAttacker(match, territories[i], setMatch );
+                        try{MatchController.selectAttacker(match, territories[i], setMatch );}
+                        catch(e){
+                          console.error(e);
+                          navigate("/"); 
+                        }
                         break;
                     }
 
                     //Selezione del territorio difensore
                     if(territories[i].id === territoryId && !territories[i].owner.id !== player.id && territories[i].clickable === true && match.attacker !== null){ 
-                        MatchController.selectDefender(match, territories[i], setMatch );
+                        try{MatchController.selectDefender(match, territories[i], setMatch );}
+                        catch(e){
+                          console.error(e);
+                          navigate("/"); 
+                        }
                         break;
                     }
                 }
@@ -78,13 +111,21 @@ function Match() {
                 for(let i=0; i<territories.length; i++){
                     //Selezione del territorio da cui spostare le armate
                     if(territories[i].id === territoryId && territories[i].owner.id === player.id && territories[i].clickable === true && match.territoryFrom === null){                        
-                        MatchController.selectTerritoryFrom(match, territories[i], setMatch);
+                        try{MatchController.selectTerritoryFrom(match, territories[i], setMatch);}
+                        catch(e){
+                          console.error(e);
+                          navigate("/"); 
+                        }
                         break;
                     }
 
                     //Selezione del territorio su cui spostare le armate
                     if(territories[i].id === territoryId && territories[i].owner.id === player.id && territories[i].clickable === true && match.territoryFrom !== null){                        
-                        MatchController.selectTerritoryTo(match, territories[i], setMatch);
+                        try{MatchController.selectTerritoryTo(match, territories[i], setMatch);}
+                        catch(e){
+                          console.error(e);
+                          navigate("/"); 
+                        }
                         break;
                     }
                 }
@@ -144,7 +185,7 @@ function Match() {
     const getGameCards = (cards) => {
         let cardList = [];
         let component = null;
-        
+
         for(let i=0; i<cards.length; i++){
             cardList[i] = (
                 <GameCard 
@@ -167,14 +208,16 @@ function Match() {
 
     return (
         <ThemeProvider theme = {theme}>
-            <div className="match">                      
-                <Mission 
-                    className="mission"
-                    description = {player.mission.description}
-                /> 
+            <div className="match">
+                <div className="mission_div">
+                    <Mission 
+                        className="mission"
+                        description = {player.mission.description}
+                    /> 
+                </div>                    
                 {getGameCards(cards)}
                 <Map               
-                    className="map"  
+                    className="map menu"  
                     match = {match}
                     player = {player}
                     placedArmies = {placedArmies}
@@ -183,7 +226,13 @@ function Match() {
                     onMouseOver = {onMouseOverHandler}
                     onMouseOut = {onMouseOutHandler}
                 />
-                <ControlPanel match = {match} player = {player} cards = {cards} setMatch = {setMatch} movedArmies = {movedArmies} setMovedArmies = {setMovedArmies}/>
+                <ControlPanel 
+                    match = {match} 
+                    player = {player} 
+                    cards = {cards} 
+                    setMatch = {setMatch} 
+                    movedArmies = {movedArmies} 
+                    setMovedArmies = {setMovedArmies}/>
             </div>   
         </ThemeProvider>             
     );    

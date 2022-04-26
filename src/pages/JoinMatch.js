@@ -3,7 +3,7 @@ import '../styles/JoinMatch.css';
 import { Button, RadioGroup, Radio, FormControlLabel, TextField } from "@mui/material";
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, Link as RouterLink} from 'react-router-dom';
 
 const ApiGateway = require("../js/apiGateway").default;
 const WebSocket = require("../js/webSocket").default;
@@ -21,27 +21,39 @@ const JoinMatch = () => {
   
   useEffect(
     () => {
-      client.subscribe(
-        "/queue/joinableMatches", 
-        function (payload) {
-          setMatches(JSON.parse(payload.body));
-        },
-        {id: "joinableMatches"}
-      );
-
-      setMatches(ApiGateway.getJoinableMatches());
-    }, []
+      try{
+        client.subscribe(
+          "/queue/joinableMatches", 
+          function (payload) {
+            setMatches(JSON.parse(payload.body));
+          },
+          {id: "joinableMatches"}
+        );
+  
+        setMatches(ApiGateway.getJoinableMatches());
+      }
+      catch(e){
+        console.error(e);
+        navigate("/"); 
+      } 
+    }, [navigate]
   )
 
   const joinMatchSubmit = event => {
-    event.preventDefault(); //Evita che viene ricaricata la pagina
-    client.send("/app/join_match", {}, JSON.stringify({matchId : matchId, playerName : playerName}));
-    navigate("/waiting_room/" + matchId);
-    client.unsubscribe("joinableMatches");
+    try{
+      event.preventDefault(); //Evita che viene ricaricata la pagina
+      client.send("/app/join_match", {}, JSON.stringify({matchId : matchId, playerName : playerName}));
+      navigate("/waiting_room/" + matchId);
+      client.unsubscribe("joinableMatches");
+    }
+    catch(e){
+      console.error(e);
+      navigate("/"); 
+    } 
   }
 
   const handlePlayerName = event => {
-    setPlayerName(event.target.value);
+    if(event.target.value.length <= 12) setPlayerName(event.target.value);
   }
 
   const selectMatch = (event, value) =>{
@@ -71,9 +83,10 @@ const JoinMatch = () => {
   }
 
   return (
-    <div className="new-match">
+    <div className="join-match">
+      <div className="menu">
         <form onSubmit={joinMatchSubmit}>
-          <h1>Join a match</h1>
+          <h1 className="title">Join a match</h1>
           <RadioGroup 
             className="match-list" 
             name="matcheList"
@@ -83,21 +96,30 @@ const JoinMatch = () => {
           </RadioGroup>
           <br/>
           <TextField 
-          className="player-name-input"
-          label="Player name" 
-          variant="outlined"
-          autoComplete="off"
-          id = "playerName"
-          name="playerName"
-          value={playerName ? capitalizeFirstLetter(playerName) : ""}
-          onChange={handlePlayerName}/>
-          <br/>
-          <Button 
-            type="submit" 
-            className="join-match-button" 
-            variant="contained"
-            disabled = {matchId === undefined || playerName.replaceAll(' ','') === ""}>Join</Button>
-        </form>        
+            className="player-name-input"
+            label="Player name" 
+            variant="outlined"
+            autoComplete="off"
+            id = "playerName"
+            name="playerName"
+            value={playerName ? capitalizeFirstLetter(playerName) : ""}
+            onChange={handlePlayerName}/>
+            <br/>
+          <div className="buttons">
+            <Button 
+              className="home-button" 
+              variant="outlined"
+              component={RouterLink}
+              to="/"
+              >Back</Button>
+            <Button 
+              type="submit" 
+              className="home-button" 
+              variant="contained"
+              disabled = {matchId === undefined || playerName.replaceAll(' ','') === ""}>Join</Button>
+          </div>
+        </form> 
+      </div>       
     </div>
   );   
 }

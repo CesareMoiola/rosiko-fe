@@ -17,8 +17,6 @@ const Dice = (props) => {
   useEffect(()=>{
     let diceValue = props.value;
 
-    console.log(diceValue);
-
     if(props.isRolling && diceValue!=="none" && diceValue!=="remove" && diceValue!=="add"){
       const interval = setInterval(() => {
         setValue((Math.floor(Math.random() * 6) +1) + "");

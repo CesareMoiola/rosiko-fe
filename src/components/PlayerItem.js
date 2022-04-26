@@ -3,7 +3,6 @@ import '../styles/PlayerPreview.css';
 import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 
 function PlayerItem(props) {
-  console.log("Player item props: " + JSON.stringify(props));
   return (
     <ListItem key={props.id}>
         <ListItemAvatar className="avatar">

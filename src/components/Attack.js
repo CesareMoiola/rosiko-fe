@@ -68,18 +68,28 @@ function Attack(props) {
         return defender;
     }    
 
-    const getEndsAttackButton = () => {
+    const getButtons = () => {
         let button = null;
 
         const endAttacks = () => {
             apiGateway.endsAttack(props.match);
         }
 
-        if(turnPlayer === true){
-            if( props.movedArmies > 0){
+        if( turnPlayer === true)
+        {
+            if( props.movedArmies > 0 || (
+                props.match.territoryFrom !== null 
+                && props.match.territoryTo !== null 
+                && props.match.territoryFrom.owner.id === props.match.territoryTo.owner.id)
+            ){
                 button = <Button className="ends_turn_button" onClick={() => {MatchController.confirmMove(props.match, props.movedArmies)}} variant="contained" >Confirm move</Button>;
             }
-            else{ button = <Button className = "ends_attack_button" onClick={endAttacks} variant="outlined">Ends Attacks</Button> }
+            else{ 
+                button = <div>
+                    <Button className = "ends_attack_button margin_right" onClick={endAttacks} variant="outlined">Ends attacks</Button> 
+                    <Button className = "ends_attack_button" onClick={()=>{apiGateway.endsTurn(props.match)}} variant="outlined">Ends turn</Button> 
+                </div>
+            }
         }
        
         return button;
@@ -91,7 +101,7 @@ function Attack(props) {
             {getAttacker()}
             {showArrow ? <Arrow className="arrow" color={ArmiesTheme["GRAY"].main}/> : null}
             {getDefender()}
-            {getEndsAttackButton()}              
+            {getButtons()}              
             {showTitle ? <Divider className="control_panel_divider"/> : null}              
         </div>
     );  

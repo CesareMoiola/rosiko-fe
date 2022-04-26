@@ -20,6 +20,8 @@ const getMargin = (card) => {
 
 function GameCard(props) {
 
+  let card = null;
+
   const getImageSource = () => {
     let image = null;
 
@@ -33,16 +35,31 @@ function GameCard(props) {
     return image;
   }
 
-  return (
-    <Card className="gameCard" elevation={getElevation(props.card)} onClick={props.onClick} sx={{marginBottom: getMargin(props.card)}}>
-      <CardContent className="game_card_content">
-        {getImageSource()}
-        <Divider className="card_divider"/>
-        <TerritoryImage className="image" card = {props.card} territories = {props.territories} player={props.player}/>
-        <Typography className="card_territory_name" variant="caption"> {props.card.territoryName} </Typography>
-      </CardContent>
-    </Card>
-  );  
+  const getCard = () => {
+    if(props.card.cardType === "JOLLY"){
+      card = <Card className="gameCard" elevation={getElevation(props.card)} onClick={props.onClick} sx={{marginBottom: getMargin(props.card)}}>
+        <CardContent className="jolly_game_card_content">
+          <img className="jolly_image" alt="tractor" src={tractorImage}/>
+          <img className="jolly_image" alt="farmer" src={farmerImage}/>
+          <img className="jolly_image" alt="cow" src={cowImage}/>          
+        </CardContent>
+      </Card>
+    }
+    else{
+      card = <Card className="gameCard" elevation={getElevation(props.card)} onClick={props.onClick} sx={{marginBottom: getMargin(props.card)}}>
+        <CardContent className="game_card_content">
+          {getImageSource()}
+          <Divider className="card_divider"/>
+          <TerritoryImage className="image" card = {props.card} territories = {props.territories} player={props.player}/>
+          <Typography className="card_territory_name" variant="caption"> {props.card.territoryName} </Typography>
+        </CardContent>
+      </Card>
+    }
+
+    return card;
+  }
+
+  return getCard();  
 }
 
 export default GameCard;

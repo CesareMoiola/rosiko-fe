@@ -24,10 +24,13 @@ function Place3Armies(props) {
                 <Typography className="avaiableArmiesDescription" variant="caption" color={textColor}>
                     Avaiable armies 
                 </Typography> 
-                <br/>           
-                <Typography className="avaiableArmies" variant="h3" fontWeight="bold" align="center" color={textColor}>
-                    {props.player.availableArmies} {" "} <Logo className="logo" color={textColor}/>
-                </Typography>  
+                <br/>       
+                <div className="armies_cards">
+                    <Typography className="avaiableArmies" variant="h3" fontWeight="bold" align="center" color={textColor}>
+                        {props.player.availableArmies}
+                    </Typography>  
+                    <Logo className="logo" color={textColor}/>
+                </div>    
                 <br/>
             </Card>            
             <Divider className="control_panel_divider"/>           

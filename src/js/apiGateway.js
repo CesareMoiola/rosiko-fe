@@ -143,6 +143,14 @@ const playCards = (match, player, cardSet) => {
     client.send("/app/play_cards", {}, JSON.stringify({matchId : match.id, playerId : player.id, card_1 : cardSet[0].id, card_2 : cardSet[1].id, card_3 : cardSet[2].id}));
 }
 
+const surrender = (match, player) => {
+    client.send("/app/surrender", {}, JSON.stringify({matchId : match.id, playerId : player.id}));
+}
+
+const leavesMatch = (match, playerId) => {
+    client.send("/app/leaves_match", {}, JSON.stringify({matchId : match.id, playerId : playerId}));
+}
+
 export default {
     newMatch,
     getJoinableMatches,
@@ -159,5 +167,7 @@ export default {
     endsTurn,
     confirmMove,
     endsAttack,
-    playCards
+    playCards,
+    surrender,
+    leavesMatch
 };

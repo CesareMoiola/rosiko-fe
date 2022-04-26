@@ -70,7 +70,7 @@ const Map = (props) => {
       xmlSpace="preserve"
       {...props}
     >
-    <style>{".st0{fill:none;stroke:#9e9e9e;stroke-dasharray:4,4}.border{fill:#e0e0e0;stroke:#fff;stroke-miterlimit:4.3217}.st3{fill:#fff}.st4{font-family:'ArialMT'}.st5{font-size:12px } "}</style>
+    <style>{".st0{fill:none;stroke:#000000;stroke-dasharray:4,4;opacity:0.6}.border{fill:#e0e0e0;stroke:#fff;stroke-miterlimit:4.3217}.st3{fill:#fff}.st4{font-family:'ArialMT'}.st5{font-size:12px } "}</style>
     <g id="Routes">
       <path
         className="st0"
@@ -80,7 +80,7 @@ const Map = (props) => {
     <g
       id="Nations"
       transform="translate(-167.997 -118.555)"
-      style={{ opacity:0.7 }}
+      style={{ opacity:0.8 }}
     >
         <g id="eastern_australia">
           <path

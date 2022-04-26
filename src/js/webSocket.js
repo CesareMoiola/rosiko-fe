@@ -10,8 +10,8 @@ class PrivateWebSocket {
         this.client.connect(
             {},
             function (header) {
-                console.log("Connection header: " + JSON.stringify(header));
-                    userId = header.headers["user-name"];
+                userId = header.headers["user-name"];
+                console.log("User id: " + userId);
             }
         );        
     }

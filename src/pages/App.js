@@ -7,16 +7,23 @@ import Match from './Match.js';
 import React from 'react';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import JoinMatch from './JoinMatch.js';
-import { ArmiesTheme } from "../js/armiesPalette";
+import Logo from '../components/Logo';
+/*import home_background from '../images/globe.svg';*/
 
 const theme = createTheme(
   {
     palette: {
+      primary: {
+        main:"#212121", 
+        light:"#616161", 
+        dark: "black", 
+        contrastText: "white"
+      },
       secondary: {
         main:"#fafafa", 
         light:"#ffffff", 
         dark: "#eeeeee", 
-        contrastText: ArmiesTheme.GRAY.dark
+        contrastText: "black"
       }
     },
     shape: {
@@ -26,8 +33,9 @@ const theme = createTheme(
 );
 
 function App() {
+  /*style={{ backgroundImage: `url(${home_background})`}}*/
   return (
-    <div className="App">
+    <div className="App" style={{ backgroundColor:"#e0e0e0"}}>
       <ThemeProvider theme = {theme}>
         <Routes>
           <Route path="/" element={<Home/>}/>
@@ -36,7 +44,7 @@ function App() {
           <Route path="/waiting_room/:id" element={<WaitingRoom/>}/>
           <Route path="/Match/:id" element={<Match/>}/>
         </Routes>   
-      </ThemeProvider>            
+      </ThemeProvider>    
     </div>
   );
 }

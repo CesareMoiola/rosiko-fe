@@ -1,8 +1,9 @@
 .controlPanel{
-    border-radius: 16px !important;
     max-width: 350px;
+    padding: 0 !important;
     width: 300px;
     min-width: 200px;
+    overflow-y: auto !important;
 }
 
 .player_list{
@@ -49,3 +50,19 @@
     display: flex;
     justify-content: space-between;
 }
+
+.cardsIcon{
+    height: 1.2rem;
+    width: auto;
+}
+
+.playerInfo{
+    display: inline-flex;
+    align-items: center;
+}
+
+.surrender_button{
+    margin-right: 16px !important;
+}
+
+::-webkit-scrollbar {display:none;}
